@@ -1,6 +1,6 @@
 # Based on https://github.com/actions-rs/meta/blob/master/recipes/quickstart.md
 
-name: Generate search index 
+name: Generate search index
 
 on:
   schedule:
@@ -8,7 +8,7 @@ on:
     # Run at 04:05am everyday
     - cron: "5 4 * * *"
   push:
-    branches: [ main ]
+    branches: [main]
 
 env:
   CARGO_TERM_COLOR: always
@@ -75,11 +75,10 @@ jobs:
 
       - name: Run cargo clippy
         uses: actions-rs/cargo@v1
-        continue-on-error: true  # WARNING: only for this example, remove it!
         with:
           command: clippy
           args: -- -D warnings
-  
+
   search_index:
     name: Generate search index
     needs: [check, test, lints]
@@ -87,10 +86,10 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v2
-        
+
       - name: Download spreadsheet
         run: curl http://www.lutemusic.org/spreadsheet.xlsx > spreadsheet.xlsx
-        
+
       - name: Install stable toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -102,16 +101,14 @@ jobs:
         with:
           command: run
           args: --release
-    
+
       - name: Upload index to MeiliSearch
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: "14"
           check-latest: true
       - run: yarn install
       - run: node index.js
-          env:
-            HOST: ${{ secrets.HOST }}
-            MEILI_API_KEY: ${{ secrets.MEILI_API_KEY }}
-        
- 
+        env:
+          HOST: ${{ secrets.HOST }}
+          MEILI_API_KEY: ${{ secrets.MEILI_API_KEY }}
