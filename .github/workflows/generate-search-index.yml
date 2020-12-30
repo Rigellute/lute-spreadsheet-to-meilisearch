@@ -80,8 +80,9 @@ jobs:
           command: clippy
           args: -- -D warnings
   
-  spreadsheet:
-    name: Download lute music spreadsheet
+  search index:
+    name: Generate search index
+    needs: [check, test, lints]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
@@ -90,33 +91,24 @@ jobs:
       - name: Download spreadsheet
         run: curl http://www.lutemusic.org/spreadsheet.xlsx > spreadsheet.xlsx
         
-  parse:
-    name: Parse spreadsheet to json
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v2
-
       - name: Install stable toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
           override: true
-
       - name: Run release
         uses: actions-rs/cargo@v1
         with:
           command: run
           args: --release
-        
-  upload:
-    name: Generate search index
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/setup-node@v2
+    
+      - name: Upload index to MeiliSearch
+        uses: actions/setup-node@v2
         with:
           node-version: '14'
           check-latest: true
       - run: yarn install
       - run: node index.js
+        
+ 
