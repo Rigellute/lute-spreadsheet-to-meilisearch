@@ -30,7 +30,13 @@ async function createIndex() {
 }
 
 async function addDocuments() {
-  console.log("Preparing to upload", json.length, "pieces");
+  console.log(
+    "Preparing to upload",
+    json.length,
+    "pieces in",
+    json_array.length,
+    "chunks"
+  );
   const index = client.getIndex(indexName);
   for await (const json of json_array) {
     console.log("Inserting chunk of length", json.length);
