@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv-safe").config();
 
 const MeiliSearch = require("meilisearch");
 const json = require("./gerbode.json");

@@ -6,6 +6,6 @@ The search service is then used as the backend for my [lute-search](https://keli
 
 ## Update search index
 
-- Download the latest spreadsheet from [here](http://www.lutemusic.org/spreadsheet.xlsx)
+- Download the latest spreadsheet `curl http://www.lutemusic.org/spreadsheet.xlsx > spreadsheet.xlsx`
 - Parse the spreadsheet (with some modifications) into json `cargo run --release`
 - Run the script to send the json up to the MeiliSearch server `node index.js`

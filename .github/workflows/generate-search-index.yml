@@ -110,5 +110,8 @@ jobs:
           check-latest: true
       - run: yarn install
       - run: node index.js
+          env:
+            HOST: ${{ secrets.HOST }}
+            MEILI_API_KEY: ${{ secrets.MEILI_API_KEY }}
         
  
