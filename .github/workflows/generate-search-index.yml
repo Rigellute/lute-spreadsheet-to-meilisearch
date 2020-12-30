@@ -79,6 +79,11 @@ jobs:
           command: clippy
           args: -- -D warnings
 
+  # Since this script will run once a day without code changes, we can cache build assets.
+  # This job will
+  # - Download the latest spreadsheet
+  # - Look for cache of previous cargo release build and run release build to generate json
+  # - Look for cache of previous yarn install and run script to upload index to meilisearch server
   search_index:
     name: Generate search index
     needs: [check, test, lints]
