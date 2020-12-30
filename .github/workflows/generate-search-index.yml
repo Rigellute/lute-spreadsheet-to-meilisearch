@@ -80,7 +80,7 @@ jobs:
           command: clippy
           args: -- -D warnings
   
-  search index:
+  search_index:
     name: Generate search index
     needs: [check, test, lints]
     runs-on: ubuntu-latest
