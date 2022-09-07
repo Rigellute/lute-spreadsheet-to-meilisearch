@@ -3,12 +3,15 @@
 name: Generate search index
 
 on:
-  schedule:
+  # Disabled the schedule for now
+  # schedule:
     # * is a special character in YAML so you have to quote this string
     # Run at 04:05am everyday
-    - cron: "5 4 * * *"
+    # - cron: "5 4 * * *"
   push:
     branches: [main]
+  # Enable running on demand
+  workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
