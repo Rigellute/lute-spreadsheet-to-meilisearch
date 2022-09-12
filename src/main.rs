@@ -185,8 +185,6 @@ fn main() -> Result<(), Error> {
         };
     }
 
-    let test_piece = &pieces[0];
-    assert_eq!(test_piece.subtitle, Some("1. Moderato".to_string()));
     println!("Parsed {} pieces", pieces.len());
 
     if let Ok(pieces_json) = serde_json::to_string(&pieces) {
