@@ -52,9 +52,13 @@ async function query() {
 }
 
 async function deleteIndex() {
-  const index = client.getIndex(indexName);
-  await index.deleteIndex();
-  console.log(indexName, "index deleted");
+  try {
+    const index = client.getIndex(indexName);
+    await index.deleteIndex();
+    console.log(indexName, "index deleted");
+  } catch (e) {
+    console.log("Error deleting index", e.message);
+  }
 }
 
 async function getStats() {
