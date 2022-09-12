@@ -5,9 +5,9 @@ name: Generate search index
 on:
   # Disabled the schedule for now
   # schedule:
-    # * is a special character in YAML so you have to quote this string
-    # Run at 04:05am everyday
-    # - cron: "5 4 * * *"
+  # * is a special character in YAML so you have to quote this string
+  # Run at 04:05am everyday
+  # - cron: "5 4 * * *"
   push:
     branches: [main]
   # Enable running on demand
@@ -168,5 +168,5 @@ jobs:
       - run: yarn install
       - run: node index.js
         env:
-          HOST: ${{ secrets.HOST }}
+          HOST: https://lute-search.rigellute.com
           MEILI_API_KEY: ${{ secrets.MEILI_API_KEY }}
