@@ -147,9 +147,9 @@ jobs:
 
       - run: |
           curl \
-            -X POST '$HOST/indexes/lute/documents?primaryKey=id' \
-            -H 'Content-Type: text/csv' \
-            -H 'Authorization: Bearer $MEILI_API_KEY' \
+            -X POST "$HOST/indexes/lute/documents?primaryKey=id" \
+            -H "Content-Type: text/csv" \
+            -H "Authorization: Bearer $MEILI_API_KEY" \
             --data-binary @gerbode.csv
         env:
           HOST: https://lute-search.rigellute.com
