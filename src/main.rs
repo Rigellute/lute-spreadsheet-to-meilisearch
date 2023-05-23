@@ -143,7 +143,7 @@ impl From<PieceOriginal> for PieceCleaned {
     }
 }
 
-fn main() -> Result<(), Error> {
+fn main() -> anyhow::Result<()> {
     println!("Opening spreadsheet");
     let mut workbook: Xlsx<_> = open_workbook("spreadsheet.xlsx")?;
     let range = workbook
@@ -152,7 +152,7 @@ fn main() -> Result<(), Error> {
 
     let iter = RangeDeserializerBuilder::new().from_range(&range)?;
 
-    let mut pieces: Vec<PieceCleaned> = vec![];
+    let mut csv_writer = csv::Writer::from_path("gerbode.csv")?;
 
     for piece in iter {
         match piece {
@@ -161,23 +161,20 @@ fn main() -> Result<(), Error> {
                 let mut piece_cleaned = PieceCleaned::from(piece.clone());
                 // Attempt to parse the date, and leave None if unsuccessful
                 if let Some(date) = piece.date {
-                    let mut date = date;
-                    if date.contains("c.") {
-                        let replaced_date = date.replace("c.", "");
-                        date = replaced_date;
-                    }
+                    let numeric_date: String = date.chars().filter(|c| c.is_numeric()).collect();
 
-                    match date.parse::<i32>() {
+                    match numeric_date.parse::<i32>() {
                         Ok(parsed_date) => {
                             piece_cleaned.date = Some(parsed_date);
-                            piece_cleaned.is_date_approximate = true;
+                            piece_cleaned.is_date_approximate = date.len() != numeric_date.len();
                         }
                         Err(e) => {
-                            println!("Error parsing date {}", e);
+                            println!("Error parsing date {}: {}", date, e);
                         }
                     };
                 }
-                pieces.push(piece_cleaned);
+
+                csv_writer.serialize(piece_cleaned)?;
             }
             Err(e) => {
                 println!("Error parsing row {}", e);
@@ -185,15 +182,9 @@ fn main() -> Result<(), Error> {
         };
     }
 
-    println!("Parsed {} pieces", pieces.len());
+    println!("Success!");
 
-    if let Ok(pieces_json) = serde_json::to_string(&pieces) {
-        write("gerbode.json", pieces_json)?;
-
-        println!("Saved file gerbode.json!");
-    } else {
-        println!("Something went wrong saving to json");
-    };
+    csv_writer.flush()?;
 
     Ok(())
 }

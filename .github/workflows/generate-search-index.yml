@@ -109,11 +109,9 @@ jobs:
           command: clippy
           args: -- -D warnings
 
-  # Since this script will run once a day without code changes, we can cache build assets.
   # This job will
   # - Download the latest spreadsheet
   # - Look for cache of previous cargo release build and run release build to generate json
-  # - Look for cache of previous yarn install and run script to upload index to meilisearch server
   search_index:
     name: Generate search index
     needs: [check, test, lints]
@@ -147,26 +145,12 @@ jobs:
           command: run
           args: --release
 
-      - name: Upload index to MeiliSearch
-        uses: actions/setup-node@v2
-        with:
-          node-version: "14"
-          check-latest: true
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - uses: actions/cache@v2
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - run: yarn install
-      - run: node index.js
+      - run: |
+          curl \
+            -X POST '$HOST/indexes/lute/documents?primaryKey=id' \
+            -H 'Content-Type: text/csv' \
+            -H 'Authorization: Bearer $MEILI_API_KEY' \
+            --data-binary @gerbode.csv
         env:
           HOST: https://lute-search.rigellute.com
           MEILI_API_KEY: ${{ secrets.MEILI_API_KEY }}
