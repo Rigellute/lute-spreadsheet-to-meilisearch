@@ -1,6 +1,5 @@
 use calamine::{open_workbook, Error, RangeDeserializerBuilder, Reader, Xlsx};
 use serde::{Deserialize, Serialize};
-use std::fs::write;
 use uuid::Uuid;
 
 #[derive(Debug, Deserialize, Clone)]
@@ -169,7 +168,7 @@ fn main() -> anyhow::Result<()> {
                             piece_cleaned.is_date_approximate = date.len() != numeric_date.len();
                         }
                         Err(e) => {
-                            println!("Error parsing date {}: {}", date, e);
+                            println!("Error parsing date {date}: {e}");
                         }
                     };
                 }
@@ -177,7 +176,7 @@ fn main() -> anyhow::Result<()> {
                 csv_writer.serialize(piece_cleaned)?;
             }
             Err(e) => {
-                println!("Error parsing row {}", e);
+                println!("Error parsing row {e}");
             }
         };
     }
