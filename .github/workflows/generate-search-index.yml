@@ -144,13 +144,7 @@ jobs:
         with:
           command: run
           args: --release
-
-      - run: |
-          curl \
-            -X POST "$HOST/indexes/lute/documents?primaryKey=id" \
-            -H "Content-Type: text/csv" \
-            -H "Authorization: Bearer $MEILI_API_KEY" \
-            --data-binary @gerbode.csv
         env:
-          HOST: https://lute-search.rigellute.com
-          MEILI_API_KEY: ${{ secrets.MEILI_API_KEY }}
+          MEILISEARCH_API_KEY: ${{ secrets.MEILI_API_KEY }}
+          MEILISEARCH_HOST: https://lute-search.rigellute.com
+          LUTE_MUSIC_URL: https://www.lutemusic.org/spreadsheet.xlsx

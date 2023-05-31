@@ -1,8 +1,8 @@
 [package]
-name = "rust-excel-to-json"
+name = "rust-excel-to-meilisearch"
 version = "0.1.0"
 authors = ["Alexander Keliris <rigellute@gmail.com>"]
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -11,7 +11,12 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1"
 calamine = "0.16.1"
 uuid = { version = "0.8", features = ["serde", "v4"] }
-csv = "1.2.1"
 anyhow = "1.0.71"
+meilisearch-sdk = { version = "0.23.2", features = ["isahc-static-ssl"] }
+tokio = { version = "1.28.2", features = ["full"] }
+reqwest = { version = "0.11.18", default-features = false, features = ["rustls-tls"] }
+dotenvy = "0.15.7"
+tracing-subscriber = { version = "0.3.17", features = ["env-filter"] }
+tracing = "0.1.37"
 
 
