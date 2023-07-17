@@ -71,7 +71,7 @@ async fn main() -> anyhow::Result<()> {
 
     let meili_client = Client::new(&config.meili_host, Some(config.meili_key));
 
-    let timeout = Some(Duration::from_secs(30));
+    let timeout = Some(Duration::from_secs(120));
     let index = meili_client.index("lute");
 
     // Set filterable attributes so we can query with difficulty and date ranges
@@ -83,10 +83,10 @@ async fn main() -> anyhow::Result<()> {
 
     // Load the documents in batches
     let tasks = index
-        .add_documents_in_batches(&parsed_rows, Some(5000), Some("id"))
+        .add_documents_in_batches(&parsed_rows, Some(1000), Some("id"))
         .await?;
 
-    // Wait for all the tasks to be finished, timeout after 30 seconds
+    // Wait for all the tasks to be finished, timeout after $timeout
     meili_client
         .wait_for_task(tasks.last().unwrap(), None, timeout)
         .await?;
