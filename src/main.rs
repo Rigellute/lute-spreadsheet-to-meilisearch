@@ -76,7 +76,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Set filterable attributes so we can query with difficulty and date ranges
     index
-        .set_filterable_attributes(["difficulty", "date"])
+        .set_filterable_attributes(["difficulty", "date", "composer", "type_of_piece", "key"])
         .await?
         .wait_for_completion(&meili_client, None, timeout)
         .await?;
