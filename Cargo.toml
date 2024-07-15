@@ -3,6 +3,7 @@ name = "rust-excel-to-meilisearch"
 version = "0.1.0"
 authors = ["Alexander Keliris <rigellute@gmail.com>"]
 edition = "2021"
+repository = "https://github.com/Rigellute/lute-spreadsheet-to-meilisearch/"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -14,9 +15,31 @@ uuid = { version = "0.8", features = ["serde", "v4"] }
 anyhow = "1.0.71"
 meilisearch-sdk = { version = "0.23.2", features = ["isahc-static-ssl"] }
 tokio = { version = "1.28.2", features = ["full"] }
-reqwest = { version = "0.11.18", default-features = false, features = ["rustls-tls"] }
+reqwest = { version = "0.11.18", default-features = false, features = [
+  "rustls-tls",
+] }
 dotenvy = "0.15.7"
 tracing-subscriber = { version = "0.3.17", features = ["env-filter"] }
 tracing = "0.1.37"
 
+# The profile that 'cargo dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
 
+# Config for 'cargo dist'
+[workspace.metadata.dist]
+# The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)
+cargo-dist-version = "0.19.1"
+# CI backends to support
+ci = "github"
+# The installers to generate for each app
+installers = ["shell"]
+# Target platforms to build apps for (Rust target-triple syntax)
+targets = ["aarch64-apple-darwin", "x86_64-unknown-linux-gnu"]
+# Path that installers should place binaries in
+install-path = "CARGO_HOME"
+# Publish jobs to run in CI
+pr-run-mode = "plan"
+# Whether to install an updater program
+install-updater = false
