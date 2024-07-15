@@ -1,15 +1,6 @@
-# Based on https://github.com/actions-rs/meta/blob/master/recipes/quickstart.md
-
 name: Generate search index
 
 on:
-  # Disabled the schedule for now
-  # schedule:
-  # * is a special character in YAML so you have to quote this string
-  # Run at 04:05am everyday
-  # - cron: "5 4 * * *"
-  push:
-    branches: [main]
   # Enable running on demand
   workflow_dispatch:
 
@@ -17,134 +8,25 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  check:
-    name: Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v2
-
-      - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-
-      - name: Get cargo cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Run cargo check
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-
-  test:
-    name: Test Suite
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v2
-
-      - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-
-      - name: Get cargo cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Run cargo test
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-
-  lints:
-    name: Lints
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v2
-
-      - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-          components: rustfmt, clippy
-
-      - name: Get cargo cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Run cargo fmt
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
-
-      - name: Run cargo clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: -- -D warnings
-
   # This job will
   # - Download the latest spreadsheet
   # - Look for cache of previous cargo release build and run release build to generate json
   search_index:
     name: Generate search index
-    needs: [check, test, lints]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout sources
-        uses: actions/checkout@v2
+      - name: Install binary
+        run: |
+          curl --proto '=https' --tlsv1.2 -LsSf https://github.com/Rigellute/lute-spreadsheet-to-meilisearch/releases/download/v0.1.0/rust-excel-to-meilisearch-installer.sh | sh
 
-      - name: Download spreadsheet
-        run: curl https://www.lutemusic.org/spreadsheet.xlsx > spreadsheet.xlsx
+      - name: Verify installation
+        run: |
+          which rust-excel-to-meilisearch || echo "Binary not found in PATH"
 
-      - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-
-      - name: Get cargo release build cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Run release
-        uses: actions-rs/cargo@v1
-        with:
-          command: run
-          args: --release
+      - name: Run binary
+        run: |
+          rust-excel-to-meilisearch
         env:
           MEILISEARCH_API_KEY: ${{ secrets.MEILI_API_KEY }}
           MEILISEARCH_HOST: https://lute-search.rigellute.com
-          LUTE_MUSIC_URL: https://www.lutemusic.org/spreadsheet.xlsx
+          LUTE_MUSIC_URL: https://browse.lutemusic.org/spreadsheet.xlsx
