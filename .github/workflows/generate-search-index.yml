@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Install binary
         run: |
-          curl --proto '=https' --tlsv1.2 -LsSf https://github.com/Rigellute/lute-spreadsheet-to-meilisearch/releases/download/v0.1.0/rust-excel-to-meilisearch-installer.sh | sh
+          curl --proto '=https' --tlsv1.2 -LsSf https://github.com/Rigellute/lute-spreadsheet-to-meilisearch/releases/latest/download/rust-excel-to-meilisearch-installer.sh | sh
 
       - name: Verify installation
         run: |
