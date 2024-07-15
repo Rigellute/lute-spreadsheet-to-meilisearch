@@ -29,7 +29,7 @@ jobs:
         with:
           components: clippy
       - name: Run linter
-        run: clippy --workspace --all-targets -- -Dwarnings
+        run: cargo clippy --workspace --all-targets -- -Dwarnings
   test:
     name: Test
     runs-on: ${{ matrix.os }}
@@ -42,4 +42,4 @@ jobs:
       - uses: actions/checkout@v3
       - uses: moonrepo/setup-rust@v1
       - name: Run tests
-        run: test
+        run: cargo test
